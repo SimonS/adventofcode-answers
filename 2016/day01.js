@@ -32,5 +32,8 @@ var output = input.split(', ').reduce(function(position, instruction) {
 console.log('part 1', output);
 
 // we use side effects everywhere for this bit.
-console.log('part 2', locations.map(JSON.stringify).filter((val, idx, self) => self.filter(x => x===val).length > 1));
+// and I believe I derived the answer by manually looking for the first
+// occurrence of a dupe. ([-137, -10] = 147)
+console.log('part 2', locations.map(JSON.stringify)
+    .filter((val, idx, self) => self.filter(x => x===val).length > 1));
 
