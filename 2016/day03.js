@@ -13,3 +13,23 @@ const isValid = tri =>
     tri[2] < tri[1] + tri[0];
 
 console.log(horizontal.filter(isValid).length);
+
+// my god this is nasty:
+let columns = [];
+[0, 1, 2].forEach(x => {
+    horizontal.forEach(y => {
+        columns.push(y[x])
+    })
+})
+columns = columns.filter(x => typeof x !== 'undefined'); // don't ask me where the undefineds come from
+
+// chunk the aggregated columns
+const verticals = columns.reduce((total, n) => {
+    while (!total.length || total[total.length - 1].length === 3) total.push([]);
+
+    let last = total[total.length - 1];
+    last.push(n)
+    return total
+}, [])
+
+console.log(verticals.filter(isValid).length);
