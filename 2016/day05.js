@@ -6,6 +6,7 @@ let pass = '';
 
 const isInteresting = hash => hash.slice(0,5) === '00000';
 
+// this is an opportunity to use generators, I'm yet to use that opportunity.
 const getNext = () => {
     while (!isInteresting(md5(input + srcN))) {
         srcN++
