@@ -6,7 +6,7 @@ let pass = '';
 
 const isInteresting = hash => hash.slice(0,5) === '00000';
 
-let getNext = () => {
+const getNext = () => {
     while (!isInteresting(md5(input + srcN))) {
         srcN++
     }
