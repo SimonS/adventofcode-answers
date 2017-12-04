@@ -4,18 +4,22 @@
   (->> (slurp "2017/inputs/day04.txt")
        str/split-lines))
 
+(defn tokenize [word]
+    (str/split word #" "))
+
+(defn is-unique? [lst] 
+    (= (count (set lst)) (count lst)))
+
 (defn password-has-unique-words? [passphrase]
-    (let [tokens (str/split passphrase #" ")]
-        (= (count (set tokens)) (count tokens))))
+    (is-unique? (tokenize passphrase)))
 
 ; pt 1:
 (count (filter password-has-unique-words? normalised-data))
 
 (defn password-has-no-anagrams? [passphrase]
-    (let [tokens (str/split passphrase #" ")
-          sorted-tokens (map sort tokens)]
-        (= (count (set sorted-tokens)) (count sorted-tokens))))
+    (->> (tokenize passphrase)
+         (map sort)
+         is-unique?))
 
 ; pt 2:
 (count (filter password-has-no-anagrams? normalised-data))
-
