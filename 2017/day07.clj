@@ -1,4 +1,4 @@
-(require '[clojure.string :as str])
+(require '[clojure.string :as str] '[clojure.set :as set])
 
 (def example-input ["pbga (66)"
                     "ebii (61)" "havc (66)" "ktlj (57)" "fwft (72) -> ktlj, cntj, xhth"
@@ -32,7 +32,7 @@
                       (mapcat :deps)
                       set)
         names (set (filter :name discs))]
-    (clojure.set/difference discs-with-deps all-deps)))
+    (set/difference discs-with-deps all-deps)))
 
 ; (find-bottom example-input)
 
