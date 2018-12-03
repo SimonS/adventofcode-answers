@@ -37,6 +37,9 @@ const fillRect = (claim) => {
     }
 }
 
-claimSpecs.forEach(fillRect)
+claimSpecs.forEach(fillRect);
 
-console.log(rect.map(row => row.filter(col => col > 1).length).reduce((a, b) => a + b, 0))
+const totalOverSubscribed = rect.map(row => row.filter(col => col > 1).length)
+    .reduce((a, b) => a + b, 0)
+
+console.log(`part 1: ${totalOverSubscribed}`);
