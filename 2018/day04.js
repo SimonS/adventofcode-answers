@@ -56,6 +56,7 @@ const getTotalSleepTime = (wakeSleeps) => {
         const sleep = wakeSleeps[i].time.getMinutes()
         const wake = wakeSleeps[i + 1].time.getMinutes()
 
+        wakeSleeps[i + 1]
         totalSleepTime += (wake - sleep)
     }
 
@@ -64,11 +65,39 @@ const getTotalSleepTime = (wakeSleeps) => {
 
 const guardsAsleepTimes = shifts.reduce((guards, shift) => {
     const [shiftStart, ...wakeSleeps] = shift
-    guards[shiftStart.id] = {
-        wakeSleeps,
-        sleepTime: getTotalSleepTime(wakeSleeps)
+    if (!(shiftStart.id in guards)) {
+        guards[shiftStart.id] = {
+            wakeSleeps,
+            sleepTime: getTotalSleepTime(wakeSleeps)
+        }
+    } else {
+        guards[shiftStart.id].wakeSleeps = [...guards[shiftStart.id].wakeSleeps, ...wakeSleeps]
+        guards[shiftStart.id].sleepTime += getTotalSleepTime(wakeSleeps)
     }
+    
     return guards
 }, {});
 
-console.log(guardsAsleepTimes) //.sort((guardA, guardB) => guardB.sleepTime - guardA.sleepTime))
+const [sleepiestGuard] = Object.entries(guardsAsleepTimes).sort((a, b) => b[1].sleepTime - a[1].sleepTime)[0]
+
+console.log('Part 1:')
+console.log(`The sleepiest guard is #${sleepiestGuard}`);
+
+let sleepMinutes = {};
+for (let i = 0; i < 60; i++) {
+    sleepMinutes[i] = 0;
+}
+
+sleepiestWakeSleeps = guardsAsleepTimes[sleepiestGuard].wakeSleeps
+
+for (let i = 0; i < sleepiestWakeSleeps.length; i += 2) {
+    const from = parseInt(sleepiestWakeSleeps[i].line.match(/:(\d\d)/)[1], 10)
+    const until = parseInt(sleepiestWakeSleeps[i+1].line.match(/:(\d\d)/)[1], 10)
+    for(let j = from; j < until; j++) {
+        sleepMinutes[j]++;
+    }
+}
+const [[sleepiestMinute]] = Object.entries(sleepMinutes).sort((a, b) => b[1] - a[1])
+
+console.log(`Their sleepiest minute is ${sleepiestMinute}`)
+console.log(`Therefore, ${sleepiestGuard} x ${sleepiestMinute} = ${sleepiestGuard*sleepiestMinute}`)
