@@ -1,13 +1,12 @@
 let polymer = require('fs').readFileSync('inputs/day05.txt', 'utf8');
 
-const isMixedSame = (pair) => pair.toLowerCase() !== pair &&
-    pair.toUpperCase() !== pair &&
-    pair[0].toUpperCase() === pair[1].toUpperCase()
+const isMixedSame = (pair) => pair[0] !== pair[1] && pair[0].toUpperCase() === pair[1].toUpperCase()
 
 const reactPolymer = (polymer) => {
     for (let i = 0; i < polymer.length; i++) {
-        let pair = [polymer[i], polymer[i + 1]].join('')
-        if (isMixedSame(pair)) {
+        const pair = polymer[i] + polymer[i + 1]
+
+        if (pair.length === 2 && isMixedSame(pair)) {
             polymer = polymer.slice(0, i) + polymer.slice(i + 2)
             i = i - 2;
         }
@@ -20,10 +19,9 @@ const reactedPolymerLength = reactPolymer(polymer).length
 
 console.log(`Part 1: ${reactedPolymerLength}`)
 
-const reactedPolymers = "abcdefghijklmnopqrstuvwxyz".split("").map(letter => {
-    return [letter, reactPolymer(polymer.replace(new RegExp(letter, 'gi'), '')).length]
-});
+const leastStableLength = "abcdefghijklmnopqrstuvwxyz"
+    .split('')
+    .reduce((max, letter) => Math.min(max,
+        reactPolymer(polymer.replace(new RegExp(letter, 'gi'), '')).length), reactedPolymerLength);
 
-const [leastStableLength] = reactedPolymers.sort((a, b) => a[1] - b[1])
-
-console.log(`Part 2: ${leastStableLength[1]}`)
+console.log(`Part 2: ${leastStableLength}`)
