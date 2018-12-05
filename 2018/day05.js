@@ -1,14 +1,12 @@
 let polymer = require('fs').readFileSync('inputs/day05.txt', 'utf8');
 
-const isMixedSame = (pair) => pair[0] !== pair[1] && pair[0].toUpperCase() === pair[1].toUpperCase()
+const isMixedSame = (first, second) => first !== second && first.toUpperCase() === second.toUpperCase()
 
 const reactPolymer = (polymer) => {
     for (let i = 0; i < polymer.length; i++) {
-        const pair = polymer[i] + polymer[i + 1]
-
-        if (pair.length === 2 && isMixedSame(pair)) {
+        if (polymer[i] && polymer[i + 1] && isMixedSame(polymer[i], polymer[i + 1])) {
             polymer = polymer.slice(0, i) + polymer.slice(i + 2)
-            i = i - 2;
+            i -= 2;
         }
     }
 
