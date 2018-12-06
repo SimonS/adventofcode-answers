@@ -30,6 +30,7 @@ const included = new Set(coords.filter(inGrid).map(coordsToString))
 const getDistance = (coordA, coordB) => Math.abs((coordB[0] - coordA[0])) + Math.abs((coordB[1] - coordA[1]))
 
 let grid = []
+let totalRegionSize = 0
 
 for (i = 0; i <= maxY; i++) {
     grid.push([])
@@ -42,6 +43,10 @@ for (i = 0; i <= maxY; i++) {
             if(sortedDistances[0][1] !== sortedDistances[1][1]) {
                 grid[i].push(sortedDistances[0][0])
             } 
+
+            // cheeky hacky logic for part 2
+            let totalDistance = sortedDistances.reduce((tot, [_, distance]) => tot + distance, 0)
+            totalRegionSize += totalDistance < 10000 ? 1 : 0;
         }
     }
 }
@@ -62,3 +67,4 @@ grid.forEach((row) => {
 
 const [furthestAway] = Object.values(totals).sort((a, b) => b-a);
 console.log(`Part 1: ${furthestAway}`)
+console.log(`Part 2: ${totalRegionSize}`)
