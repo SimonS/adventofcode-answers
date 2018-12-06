@@ -46,7 +46,7 @@ for (i = 0; i <= maxY; i++) {
 
             // cheeky hacky logic for part 2
             let totalDistance = sortedDistances.reduce((tot, [_, distance]) => tot + distance, 0)
-            totalRegionSize += totalDistance < 10000 ? 1 : 0;
+            totalRegionSize += totalDistance < 10000;
         }
     }
 }
