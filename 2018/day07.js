@@ -7,7 +7,8 @@ let order = ''
 const resetTree = () => {
     alphabet.forEach(letter => tree[letter] = {
         deps: new Set(),
-        processed: false
+        processed: false,
+        processing: false
     })
 
     input.split('\n').forEach(line => {
@@ -18,13 +19,15 @@ const resetTree = () => {
 
 const freeLetters = () => Object.entries(tree).filter(([_, {
     deps,
-    processed
-}]) => !processed && deps.size === 0)
+    processed,
+    processing
+}]) => !processed && !processing && deps.size === 0)
 
 const getNextFreeLetter = () => freeLetters()[0][0]
 
 const processLetter = (letter) => {
     tree[letter].processed = true
+    tree[letter].processing = false
     alphabet.forEach(ch => tree[ch].deps.delete(letter))
     order += letter
 }
@@ -40,20 +43,31 @@ console.log(`Part 1: ${order}`)
 
 resetTree()
 
-const getLetterTime = (ch) => ch.charCodeAt(0) - 4
 let workers = []
 const workerLimit = 5
+let tickCount = 0;
 
-const tick = () => {
-    if (workers.length < workerLimit - 1) {
+const processWorkers = () => {
+    const getLetterTime = (ch) => ch.charCodeAt(0) - 4
 
+    while (workers.length < workerLimit && freeLetters().length) {
+        const activeLetter = getNextFreeLetter();
+        tree[activeLetter].processing = true
+        workers.push([activeLetter, getLetterTime(activeLetter)])
     }
+
+    workers = workers.map(([letter, workerTime]) => [letter, workerTime - 1])
+
+    workers.forEach(([letter, count], index) => {
+        if (count === 0) {
+            processLetter(letter);
+            workers.splice(index, 1)
+        }
+    })
+
+    tickCount++
 }
 
-// while (!finished()) {
-//     tick()
-// }
+while (!finished()) processWorkers()
 
-console.log(freeLetters())
-
-console.log(getLetterTime('Z'))
+console.log(`Part 2: ${tickCount}`)
