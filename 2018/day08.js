@@ -2,8 +2,6 @@ let input = require('fs').readFileSync('inputs/day08.txt', 'utf8')
     .split(' ')
     .map(n => parseInt(n, 10));
 
-// input = [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2]
-
 const parseTree = (node) => {
     let [numChildren, numMeta, ...remainder] = node
     let children = []
@@ -26,4 +24,17 @@ const sumTree = (tree, tot = 0) => {
         .reduce((a, b) => a+b, 0)
 }
 
-console.log(sumTree(parseTree(input)))
+const nodeValue = (tree) => {
+    if (tree.children.length === 0)
+        return tree.metadata.reduce((a, b) => a+b, 0)
+    
+    return tree.metadata
+        .filter(i => i - 1 < tree.children.length)
+        .map(i => nodeValue(tree.children[i-1]))
+        .reduce((a, b) => a+b, 0)
+}
+
+const parsedTree = parseTree(input)
+
+console.log('Part 1: ' + sumTree(parsedTree))
+console.log('Part 2: ' + nodeValue(parsedTree))
