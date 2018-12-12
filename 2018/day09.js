@@ -64,4 +64,7 @@ const getHighScore = (players, until) => {
 // console.log(getHighScore(30, 5807))
 
 console.log('part 1: ' + getHighScore(418, 70769))
-console.log('part 2: ' + getHighScore(418, 7076900))
+// This technically works, but while I was running it in a terminal window,
+// I rewrote the entire solution using a sensible data structure, and generated
+// the result in day09-2.js.
+// console.log('part 2: ' + getHighScore(418, 7076900))
