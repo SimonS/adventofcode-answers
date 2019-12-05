@@ -34,13 +34,9 @@ const getPath = wire => {
   return positions;
 };
 
-// let wire1Paths = getPath(wire1);
-// let wire2Paths = getPath(wire2);
-let wire1Paths = getPath("R8,U5,L5,D3");
-let wire2Paths = getPath("U7,R6,D4,L4");
+let wire1Paths = getPath(wire1);
+let wire2Paths = getPath(wire2);
 
-console.log(wire1Paths)
-console.log(wire2Paths)
-const intersections = wire1Paths.filter(x => wire2Paths.filter(y => (x.x === y.x && x.y === y.y)));
+const intersections = wire1Paths.filter(x => wire2Paths.filter(y => x.x === y.x && x.y === y.y)[0]);
 
-console.log(intersections);
+console.log(Math.min(...intersections.filter(i => !(i.x === 0 && i.y === 0)).map(point => Math.abs(point.x) + Math.abs(point.y))));
