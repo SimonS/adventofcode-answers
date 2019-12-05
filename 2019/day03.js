@@ -10,8 +10,9 @@ const getPath = wire => {
   }));
 
   let position = { x: 0, y: 0 };
-  let positions = [{ ...position }];
+  let positions = [];
   
+  let distance = 0;
   instructions.forEach(instruction => {
     for (let i = 0; i < instruction.distance; i++) {
       switch (instruction.direction) {
@@ -28,7 +29,8 @@ const getPath = wire => {
           position.x += 1;
           break;
       }
-      positions.push({...position});
+      distance++;
+      positions.push({...position, distance});
     }
   });
   return positions;
@@ -37,6 +39,33 @@ const getPath = wire => {
 let wire1Paths = getPath(wire1);
 let wire2Paths = getPath(wire2);
 
-const intersections = wire1Paths.filter(x => wire2Paths.filter(y => x.x === y.x && x.y === y.y)[0]);
+const comparePositions = (a, b) => a.x === b.x && a.y === b.y
 
-console.log(Math.min(...intersections.filter(i => !(i.x === 0 && i.y === 0)).map(point => Math.abs(point.x) + Math.abs(point.y))));
+let intersections = [];
+for (let i = 0; i < wire1Paths.length; i++) {
+    let j = 0;
+    while (j < wire2Paths.length) {
+        if (comparePositions(wire1Paths[i], wire2Paths[j])) {
+            intersections.push({
+              ...wire2Paths[j],
+              distance: wire2Paths[j].distance + wire2Paths[i].distance
+            });
+            break;
+        }
+        j++;
+    }
+
+}
+
+const closestToOrigin = Math.min(
+  ...intersections
+    .map(point => Math.abs(point.x) + Math.abs(point.y))
+);
+
+console.log(`Part 1: ${closestToOrigin}`);
+
+const shortestDistanceToIntersection = Math.min(
+  ...intersections.map(x => x.distance)
+);
+
+console.log(`Part 2: ${shortestDistanceToIntersection}`);
