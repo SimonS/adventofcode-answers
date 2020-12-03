@@ -1,6 +1,8 @@
 const fs = require("fs");
 
-const input = fs.readFileSync("inputs/day02.txt", "utf8").split("\n");
+const input = fs
+  .readFileSync(__dirname + "/inputs/day02.txt", "utf8")
+  .split("\n");
 
 const isValidLength = ([rule, targetLetter, password]) => {
   const [lower, upper] = rule.split("-");

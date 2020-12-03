@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const inputFile = fs.readFileSync("inputs/day01.txt", "utf8");
+const inputFile = fs.readFileSync(__dirname + "/inputs/day01.txt", "utf8");
 const nums = inputFile.split("\n").map((s) => parseInt(s, 10));
 
 // assumes list is unique, if it's not,

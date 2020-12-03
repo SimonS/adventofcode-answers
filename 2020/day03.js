@@ -1,5 +1,7 @@
 const fs = require("fs");
-const input = fs.readFileSync("inputs/day03.txt", "utf8").split("\n");
+const input = fs
+  .readFileSync(__dirname + "/inputs/day03.txt", "utf8")
+  .split("\n");
 
 const slopes = [
   [1, 1],
