@@ -19,8 +19,8 @@ const traverseSlope = ([across, down]) => ({ xPos, yPos, trees }, line, idx) =>
     : { xPos, yPos, trees };
 
 const treesPerSlope = slopes.map(
-  (direction) =>
-    input.reduce(traverseSlope(direction), { xPos: 0, yPos: 0, trees: 0 }).trees
+  (velocity) =>
+    input.reduce(traverseSlope(velocity), { xPos: 0, yPos: 0, trees: 0 }).trees
 );
 
 console.log(treesPerSlope[1]);
