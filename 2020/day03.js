@@ -1,5 +1,4 @@
 const fs = require("fs");
-
 const input = fs.readFileSync("inputs/day03.txt", "utf8").split("\n");
 
 const slopes = [
@@ -15,7 +14,7 @@ const traverseSlope = ([across, down]) => ({ xPos, yPos, trees }, line, idx) =>
     ? {
         xPos: (xPos + across) % line.length,
         yPos: yPos + down,
-        trees: line[xPos] === "#" ? trees + 1 : trees,
+        trees: (trees += line[xPos] === "#" ? 1 : 0),
       }
     : { xPos, yPos, trees };
 
