@@ -3,13 +3,12 @@ const input = fs.readFileSync(__dirname + "/inputs/day04.txt", "utf8");
 const isBetween = (n, lower, upper) => Number(n) >= lower && Number(n) <= upper;
 
 const validateHeight = (height) => {
-  const cms = height.match(/^(\d{3})cm$/);
-  if (cms) return isBetween(cms[1], 150, 193);
+  const match = height.match(/^(\d+)(cm|in)$/);
+  if (!match) return false;
 
-  const ins = height.match(/^(\d\d)in$/);
-  if (ins) return isBetween(ins[1], 59, 76);
-
-  return false;
+  return match[2] === "cm"
+    ? isBetween(match[1], 150, 193)
+    : isBetween(match[1], 59, 76);
 };
 
 const validators = {
@@ -17,7 +16,7 @@ const validators = {
   iyr: (val) => isBetween(val, 2010, 2020),
   eyr: (val) => isBetween(val, 2020, 2030),
   hgt: validateHeight,
-  hcl: (val) => val.match(/^#[a-f0-9]{6}$/) !== null,
+  hcl: (val) => val.match(/^#[a-f\d]{6}$/) !== null,
   ecl: (val) => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].includes(val),
   pid: (val) => val.match(/^\d{9}$/),
 };
