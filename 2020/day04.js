@@ -1,7 +1,5 @@
 const input = fs.readFileSync(__dirname + "/inputs/day04.txt", "utf8");
 
-const passports = input.split("\n\n").map((passport) => passport.split(/\s/));
-
 const isBetween = (n, lower, upper) => Number(n) >= lower && Number(n) <= upper;
 
 const validateHeight = (height) => {
@@ -28,6 +26,8 @@ const hasRequiredFields = (field) =>
   Object.keys(validators).filter(
     (x) => field.filter(([header, _]) => header === x).length === 0
   ).length === 0;
+
+const passports = input.split("\n\n").map((passport) => passport.split(/\s/));
 
 const passportsWithCorrectFields = passports
   .map((field) => field.map((f) => f.split(":")))
