@@ -28,4 +28,10 @@ const getSeatNumber = (seat) => {
   );
 };
 
-console.log(Math.max(...seats.map(getSeatNumber)));
+const sortedSeats = seats.map(getSeatNumber).sort((a, b) => a - b);
+console.log(sortedSeats[sortedSeats.length - 1]);
+
+let i = 0;
+while (i < sortedSeats.length && sortedSeats[0] + i === sortedSeats[i]) i++;
+
+console.log(sortedSeats[i] - 1);
