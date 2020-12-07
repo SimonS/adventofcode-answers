@@ -26,6 +26,7 @@ const countBagsIn = (bagColour) =>
     1
   );
 
-// that `-1` is gross, but nicer than either wrapping my function or putting in conditionals
 console.log(countBagsContainingShiny());
+
+// that `-1` is gross, but nicer than either wrapping my function or putting in conditionals
 console.log(countBagsIn("shiny gold") - 1);
