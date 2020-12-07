@@ -13,13 +13,19 @@ const rules = input
 
 const findBag = (target, bagList) =>
   bagList.filter(([colour]) => colour === target).length ||
-  bagList
-    .map(([colour]) => colour)
-    .some((colour) => findBag(target, rules[colour]));
+  bagList.some(([colour]) => findBag(target, rules[colour]));
 
-const countBags = () => {
+const countBagsContainingShiny = () => {
   return Object.keys(rules).filter((bag) => findBag("shiny gold", rules[bag]))
     .length;
 };
 
-console.log(countBags());
+const countBagsIn = (bagColour) =>
+  rules[bagColour].reduce(
+    (acc, [bag, count]) => acc + count * countBagsIn(bag),
+    1
+  );
+
+// that `-1` is gross, but nicer than either wrapping my function or putting in conditionals
+console.log(countBagsContainingShiny());
+console.log(countBagsIn("shiny gold") - 1);
