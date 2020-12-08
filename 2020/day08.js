@@ -16,18 +16,18 @@ const executeInstructions = (instructions) => {
 
     if (!seen) {
       instructions[i][2] = true;
-      switch (instruction) {
-        case "acc":
+      ({
+        acc: () => {
           acc += n;
           i++;
-          break;
-        case "jmp":
+        },
+        jmp: () => {
           i += n;
-          break;
-        case "nop":
+        },
+        nop: () => {
           i++;
-          break;
-      }
+        },
+      }[instruction]());
     } else found = true;
   }
 
@@ -47,14 +47,13 @@ const flipInstruction = (instructions, change) =>
     idx === change ? [i[0] === "nop" ? "jmp" : "nop", i[1]] : i
   );
 
-let terminated = false;
-let i = 0;
-let executed;
-while (!terminated && i <= jumps.length) {
-  executed = executeInstructions(flipInstruction([...input], jumps[i]));
-  terminated = executed.terminated;
+let terminated = false,
+  i = 0,
+  executed;
 
-  i++;
+while (!terminated && i <= jumps.length) {
+  executed = executeInstructions(flipInstruction([...input], jumps[i++]));
+  terminated = executed.terminated;
 }
 
 console.log(executed.acc);
