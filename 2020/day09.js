@@ -1,29 +1,9 @@
-// const input = fs
-//   .readFileSync(__dirname + "/inputs/day09.txt", "utf8")
-const input = `35
-20
-15
-25
-47
-40
-62
-55
-65
-95
-102
-117
-150
-182
-127
-219
-299
-277
-309
-576`
+const input = fs
+  .readFileSync(__dirname + "/inputs/day09.txt", "utf8")
   .split("\n")
   .map((n) => parseInt(n));
 
-const preamble = 5;
+const preamble = 25;
 
 const isSumFrom = (target, previousX) =>
   previousX.some((n) => new Set(previousX).has(target - n));
@@ -36,5 +16,19 @@ const invalidNumber = input.filter((n, index) =>
 
 console.log(invalidNumber);
 
-// start of part 2
-console.log(input.filter((n) => n < invalidNumber));
+const limit = input.indexOf(invalidNumber);
+
+// It's not pretty, but it gets the job done.
+let windowSize = 2,
+  found,
+  window;
+while (!found) {
+  let i = limit;
+  while (i > windowSize && !found) {
+    window = input.slice(i - windowSize, i--);
+    if (window.reduce((a, b) => a + b) === invalidNumber) found = true;
+  }
+  windowSize++;
+}
+
+console.log(Math.min(...window) + Math.max(...window));
