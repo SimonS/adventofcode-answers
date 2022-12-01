@@ -1,0 +1,1 @@
+/Users/simonscarfe/playground/projects/adventofcode-answers/2022/day1/target/debug/day1: /Users/simonscarfe/playground/projects/adventofcode-answers/2022/day1/data.txt /Users/simonscarfe/playground/projects/adventofcode-answers/2022/day1/src/main.rs
