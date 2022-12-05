@@ -5,12 +5,16 @@
 const containsEither = (a, b) =>
   (a.min <= b.min && a.max >= b.max) || (b.min <= a.min && b.max >= a.max);
 
-const part1 = input
-  .split("\n")
-  .map((pair) =>
-    pair.split(",").map((range) => ({
-      min: parseInt(range.split("-")[0], 10),
-      max: parseInt(range.split("-")[1], 10),
-    }))
-  )
-  .filter(([x, y]) => containsEither(x, y)).length;
+const overlaps = (a, b) =>
+  (a.min <= b.max && a.max >= b.min) || (b.min <= a.max && b.max >= a.min);
+
+const mappedRanges = input.split("\n").map((pair) =>
+  pair.split(",").map((range) => ({
+    min: parseInt(range.split("-")[0], 10),
+    max: parseInt(range.split("-")[1], 10),
+  }))
+);
+
+const part1 = mappedRanges.filter(([x, y]) => containsEither(x, y)).length;
+
+const part2 = mappedRanges.filter(([x, y]) => overlaps(x, y)).length;
