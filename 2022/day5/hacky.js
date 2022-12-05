@@ -27,7 +27,7 @@ const getBuckets = (i) => {
   return buckets;
 };
 
-const buckets = getBuckets(setup.split("\n 1")[0]);
+let buckets = getBuckets(setup.split("\n 1")[0]);
 
 const processInstruction = (line) => {
   const groups = line.match(
@@ -39,9 +39,27 @@ const processInstruction = (line) => {
     buckets[groups.to - 1].push(item);
   }
 };
-
 instructions.split("\n").forEach(processInstruction);
-
 const part1 = buckets.map((bucket) => bucket.pop()).join("");
 
+buckets = getBuckets(setup.split("\n 1")[0]);
+
+const processInstructionPart2 = (line) => {
+  const groups = line.match(
+    /move (?<count>\d+) from (?<from>\d+) to (?<to>\d+)/
+  ).groups;
+
+  const fromBucket = buckets[groups.from - 1];
+  const toBucket = buckets[groups.to - 1];
+  const moving = fromBucket.splice(
+    fromBucket.length - groups.count,
+    groups.count
+  );
+  toBucket.splice(toBucket.length, 0, ...moving);
+};
+
+instructions.split("\n").forEach(processInstructionPart2);
+const part2 = buckets.map((bucket) => bucket.pop()).join("");
+
 console.log(part1);
+console.log(part2);
