@@ -7,6 +7,9 @@ const intersection = (mySet1, mySet2) =>
 const getPriority = (c) =>
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(c) + 1;
 
+const groupBy3 = (arr) =>
+  Array.from({ length: arr.length / 3 }, () => arr.splice(0, 3));
+
 const part1 = actual
   .split("\n")
   .map((rucksack) => [
@@ -17,3 +20,11 @@ const part1 = actual
     intersection(compartment1, compartment2)
   )
   .reduce((acc, shared) => getPriority([...shared][0]) + acc, 0);
+
+const part2 = groupBy3(input.split("\n"))
+  .map((rucksacks) =>
+    rucksacks
+      .map((r) => new Set(r))
+      .reduce((acc, rucksack) => (acc ? intersection(rucksack, acc) : rucksack))
+  )
+  .reduce((acc, r) => getPriority([...r]) + acc, 0);
