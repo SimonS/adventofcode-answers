@@ -27,41 +27,39 @@ const tidyInput = input
   .filter((cmd) => cmd.length)
   .map((cmd) => cmd.split("\n").filter((line) => line.length));
 
-const tree = tidyInput.reduce(
+const cd = (position, path) => {
+  const relative = {
+    "/": [],
+    "..": position.slice(0, position.length - 1),
+  };
+
+  return path in relative ? relative[path] : position.concat(path);
+};
+
+const ls = (result) => ({
+  fileSize: result
+    .filter((item) => !item.startsWith("dir"))
+    .reduce((acc, file) => parseInt(file.split(" ")[0], 10) + acc, 0),
+  childDirs: result
+    .filter((item) => item.startsWith("dir"))
+    .map((dir) => dir.split(" ")[1]),
+});
+
+const fileSizeTree = tidyInput.reduce(
   (acc, cmdBlock) => {
     const [cmd, ...result] = cmdBlock;
 
     if (cmd == "ls") {
-      const fileSize = result
-        .filter((item) => !item.startsWith("dir"))
-        .reduce((acc, file) => parseInt(file.split(" ")[0], 10) + acc, 0);
-
-      const newPath = { ...acc };
-      const pathStr = acc.position.join("/");
-
-      const childDirs = result
-        .filter((item) => item.startsWith("dir"))
-        .map((dir) => dir.split(" ")[1]);
-
-      newPath.paths[pathStr] = { fileSize, childDirs };
-
-      return newPath;
+      acc.paths[acc.position.join("/")] = ls(result);
+      return acc;
     }
-
-    const [_, dir] = cmd.split(" ");
-
-    if (dir === "/") return { ...acc, position: [] };
-    if (dir === "..")
-      return {
-        ...acc,
-        position: acc.position.slice(0, acc.position.length - 1),
-      };
-    return { ...acc, position: acc.position.concat(dir) };
+    acc.position = cd(acc.position, cmd.split(" ")[1]);
+    return acc;
   },
   { paths: {}, position: [] }
 );
 
-const depthFirst = Object.keys(tree.paths)
+const depthFirst = Object.keys(fileSizeTree.paths)
   .sort((a, b) => {
     const aLevels = a.split("/").length;
     const bLevels = b.split("/").length;
@@ -71,18 +69,15 @@ const depthFirst = Object.keys(tree.paths)
   .reduce((acc, path) => {
     acc[path].fileSize += acc[path].childDirs.reduce(
       (total, dir) =>
-        acc[path.length ? path + "/" + dir : dir].fileSize + total,
+        acc[path.length ? `${path}/${dir}` : dir].fileSize + total,
       0
     );
     return acc;
-  }, tree.paths);
+  }, fileSizeTree.paths);
 
-const fileSizes = Object.values(depthFirst)
-  .map((p) => p.fileSize)
-  .sort((a, b) => b - a);
-
+const fileSizes = Object.values(depthFirst).map((p) => p.fileSize);
 const part1 = fileSizes.filter((i) => i <= 100000).reduce((a, b) => a + b, 0);
 
-const unused = 70000000 - fileSizes[0];
+const unused = 70000000 - Math.max(...fileSizes);
 const requiredForUpdate = 30000000 - unused;
-const part2 = fileSizes.filter((i) => i > requiredForUpdate).pop();
+const part2 = Math.min(...fileSizes.filter((i) => i > requiredForUpdate));
