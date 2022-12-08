@@ -8,21 +8,21 @@ const grid = input
   .split("\n")
   .map((row) => Array.from(row).map((col) => parseInt(col, 10)));
 
-const north = (grid, row, col) =>
-  grid
-    .slice(0, row)
-    .map((row) => row[col])
-    .reverse();
-const south = (grid, row, col) => grid.slice(row + 1).map((row) => row[col]);
-const east = (grid, row, col) => grid[row].slice(col + 1);
-const west = (grid, row, col) => grid[row].slice(0, col).reverse();
+const directions = [
+  (y, x) =>
+    grid
+      .slice(0, y)
+      .map((y) => y[x])
+      .reverse(),
+  (y, x) => grid.slice(y + 1).map((y) => y[x]),
+  (y, x) => grid[y].slice(x + 1),
+  (y, x) => grid[y].slice(0, x).reverse(),
+];
 
 const isClear = (line, target) => line.filter((i) => i >= target).length === 0;
 
-const isVisible = (grid, row, col) =>
-  [north, south, east, west].filter((direction) =>
-    isClear(direction(grid, row, col), grid[row][col])
-  ).length > 0;
+const isVisible = (row, col) =>
+  directions.filter((dir) => isClear(dir(row, col), grid[row][col])).length > 0;
 
 const checkSightLine = (sightLine, target) => {
   let i = 0;
@@ -31,19 +31,17 @@ const checkSightLine = (sightLine, target) => {
   return sightLine.slice(0, i + 1).length;
 };
 
-const getScenicScore = (grid, row, col) =>
-  [north, south, east, west]
-    .map((direction) =>
-      checkSightLine(direction(grid, row, col), grid[row][col])
-    )
+const getScenicScore = (y, x) =>
+  directions
+    .map((direction) => checkSightLine(direction(y, x), grid[y][x]))
     .reduce((total, direction) => total * direction, 1);
 
 const part1 = grid.flatMap((row, y) =>
-  row.filter((_, x) => isVisible(grid, y, x))
-).length; //?
+  row.filter((_, x) => isVisible(y, x))
+).length;
 console.log(part1);
 
 const part2 = Math.max(
-  ...grid.flatMap((row, y) => row.map((col, x) => getScenicScore(grid, y, x)))
+  ...grid.flatMap((row, y) => row.map((_, x) => getScenicScore(y, x)))
 );
 console.log(part2);
