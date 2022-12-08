@@ -41,10 +41,9 @@ const getScenicScore = (grid, row, col) =>
 const part1 = grid.flatMap((row, y) =>
   row.filter((_, x) => isVisible(grid, y, x))
 ).length; //?
-
 console.log(part1);
+
 const part2 = Math.max(
   ...grid.flatMap((row, y) => row.map((col, x) => getScenicScore(grid, y, x)))
 );
-
 console.log(part2);
