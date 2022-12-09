@@ -84,7 +84,7 @@ const part2 = cmds.reduce((acc, cmd) => processCommand(acc, cmd), {
     { x: 0, y: 0 },
     { x: 0, y: 0 },
   ],
-  history: new Set([JSON.stringify({ x: 0, y: 0 })]),
+  history: new Set(),
 }).history.size;
 
 console.log(`Part 1: ${part1}`);
