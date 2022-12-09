@@ -8,7 +8,7 @@ L 5
 R 2`;
 
 const move = (pos, dir) => {
-  const [head, tail] = pos;
+  const [head, ...rest] = pos;
 
   switch (dir) {
     case "R":
@@ -25,45 +25,67 @@ const move = (pos, dir) => {
       break;
   }
 
-  if (
-    ((head.y !== tail.y || head.x !== tail.x) &&
-      Math.abs(head.x - tail.x) > 1) ||
-    Math.abs(head.y - tail.y) > 1
-  ) {
-    if (dir === "L" || dir === "R") {
-      tail.y = head.y;
-    } else {
-      tail.x = head.x;
+  const movedRest = rest.map((curr, i) => {
+    const front = i === 0 ? head : rest[i - 1];
+
+    const touching = (a, b) => {
+      if (a.x === b.x) return Math.abs(a.y - b.y) <= 1;
+      if (a.y === b.y) return Math.abs(a.x - b.x) <= 1;
+
+      return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) <= 2;
+    };
+
+    if (!touching(front, curr)) {
+      if (front.x > curr.x) curr.x += 1;
+      if (front.x < curr.x) curr.x -= 1;
+      if (front.y > curr.y) curr.y += 1;
+      if (front.y < curr.y) curr.y -= 1;
     }
-  }
 
-  if (head.x - tail.x > 1) tail.x += 1;
-  if (head.x - tail.x < -1) tail.x -= 1;
-  if (head.y - tail.y > 1) tail.y += 1;
-  if (head.y - tail.y < -1) tail.y -= 1;
+    return curr;
+  });
 
-  return [head, tail];
+  return [head, ...movedRest];
 };
 
-const part1 = input
+const processCommand = (state, cmd) => {
+  const [dir, steps] = cmd;
+
+  for (let i = 0; i < steps; i++) {
+    state.pos = move(state.pos, dir);
+    state.history.add(JSON.stringify(state.pos[state.pos.length - 1]));
+  }
+
+  return state;
+};
+
+const cmds = input
   .split("\n")
-  .map((cmd) => [cmd.split(" ")[0], parseInt(cmd.split(" ")[1], 10)])
-  .reduce(
-    (state, cmd) => {
-      const [dir, steps] = cmd;
+  .map((cmd) => [cmd.split(" ")[0], parseInt(cmd.split(" ")[1], 10)]);
 
-      for (let i = 0; i < steps; i++) {
-        state.pos = move(state.pos, dir);
-        state.history.add(JSON.stringify(state.pos[1]));
-      }
+const part1 = cmds.reduce((acc, cmd) => processCommand(acc, cmd), {
+  pos: [
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+  ],
+  history: new Set(),
+}).history.size;
 
-      return state;
-    },
-    {
-      pos: [
-        { x: 0, y: 0 },
-        { x: 0, y: 0 },
-      ],
-      history: new Set([JSON.stringify({ x: 0, y: 0 })]),
-    }
-  ).history.size; //?
+const part2 = cmds.reduce((acc, cmd) => processCommand(acc, cmd), {
+  pos: [
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+  ],
+  history: new Set([JSON.stringify({ x: 0, y: 0 })]),
+}).history.size;
+
+console.log(`Part 1: ${part1}`);
+console.log(`Part 2: ${part2}`);
