@@ -151,38 +151,46 @@ const parsed = input
     line.split(" ").map((part, i) => (i == 1 ? parseInt(part, 10) : part))
   );
 
-const getSignalStrength = (instructions) => {
+const executeCommands = (parsed, doCycle, output) => {
   let cycle = 0;
   let x = 1;
   let i = 0;
-  let signalStrength = 0;
 
-  const getTargetCycle = (cycle) =>
-    cycle % 20 === 0 && cycle % 40 !== 0 ? cycle : 0;
+  while (i < parsed.length) {
+    const [instruction, val] = parsed[i];
 
-  while (i < instructions.length) {
-    const [instruction, val] = instructions[i];
     if (instruction === "noop") {
-      cycle += 1;
-      signalStrength += getTargetCycle(cycle) * x;
+      [output, cycle] = doCycle(output, cycle, x);
     } else {
-      cycle += 1;
-      signalStrength += getTargetCycle(cycle) * x;
-      cycle += 1;
-      signalStrength += getTargetCycle(cycle) * x;
+      [output, cycle] = doCycle(output, cycle, x);
+      [output, cycle] = doCycle(output, cycle, x);
       x += val;
     }
     i++;
   }
+
+  return output;
+};
+
+const getSignalStrength = (instructions) => {
+  const getTargetCycle = (cycle) =>
+    cycle % 20 === 0 && cycle % 40 !== 0 ? cycle : 0;
+
+  const calculateSignalStrength = (signalStrength, cycle, x) => {
+    cycle += 1;
+    signalStrength += getTargetCycle(cycle) * x;
+    return [signalStrength, cycle];
+  };
+
+  const signalStrength = executeCommands(
+    instructions,
+    calculateSignalStrength,
+    0
+  );
   return signalStrength;
 };
 
 const getOutput = (parsed) => {
-  let cycle = 0;
-  let x = 1;
-  let i = 0;
-  let rendered = "";
-
   const drawAndAdvance = (rendered, cycle, x) => {
     const col = cycle % 40;
     rendered += col === x || col === x - 1 || col === x + 1 ? "#" : ".";
@@ -190,21 +198,10 @@ const getOutput = (parsed) => {
     return [rendered, cycle];
   };
 
-  while (i < parsed.length) {
-    const [instruction, val] = parsed[i];
-
-    if (instruction === "noop") {
-      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
-    } else {
-      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
-      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
-      x += val;
-    }
-    i++;
-  }
+  const rendered = executeCommands(parsed, drawAndAdvance, "");
 
   return rendered.match(/.{1,40}/g).join("\n");
 };
 
 console.log(`Part 1: ${getSignalStrength(parsed)}`);
-console.log(`Part 2: ${getOutput(parsed)}`);
+console.log(`${getOutput(parsed)}`);
