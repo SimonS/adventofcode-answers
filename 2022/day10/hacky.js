@@ -177,4 +177,34 @@ const getSignalStrength = (instructions) => {
   return signalStrength;
 };
 
+const getOutput = (parsed) => {
+  let cycle = 0;
+  let x = 1;
+  let i = 0;
+  let rendered = "";
+
+  const drawAndAdvance = (rendered, cycle, x) => {
+    const col = cycle % 40;
+    rendered += col === x || col === x - 1 || col === x + 1 ? "#" : ".";
+    cycle += 1;
+    return [rendered, cycle];
+  };
+
+  while (i < parsed.length) {
+    const [instruction, val] = parsed[i];
+
+    if (instruction === "noop") {
+      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
+    } else {
+      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
+      [rendered, cycle] = drawAndAdvance(rendered, cycle, x);
+      x += val;
+    }
+    i++;
+  }
+
+  return rendered.match(/.{1,40}/g).join("\n");
+};
+
 console.log(`Part 1: ${getSignalStrength(parsed)}`);
+console.log(`Part 2: ${getOutput(parsed)}`);
