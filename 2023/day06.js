@@ -11,4 +11,12 @@ getCombos = (time, target) => {
   return winners;
 };
 
+// part 1
 times.reduce((acc, time, i) => getCombos(time, distances[i]) * acc, 1);
+
+// part 2
+const [time, distance] = input
+  .split("\n")
+  .map((line) => parseInt(line.match(/(\d+)/g).join("")));
+
+getCombos(time, distance);
